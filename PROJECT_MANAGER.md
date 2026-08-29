@@ -15,7 +15,51 @@ The Repository Control Center inventories everything owned by the authenticated 
 
 No private repository names are hard-coded in this public repository.
 
-## Run
+## Recommended one-command run
+
+On Termux, the simplest entry point is:
+
+```bash
+bash script/azam-dashboard.sh
+```
+
+That command performs this sequence:
+
+```text
+offline self-test
+      ↓
+refresh repository inventory
+      ↓
+build Project Manager
+      ↓
+verify project-manager.html exists
+      ↓
+open it with termux-open when available
+```
+
+Useful options:
+
+```bash
+bash script/azam-dashboard.sh --no-open
+bash script/azam-dashboard.sh --no-refresh
+bash script/azam-dashboard.sh --no-refresh --no-open
+```
+
+`--no-open` builds without launching the browser. `--no-refresh` reuses the current local `latest.json` inventory instead of querying GitHub again.
+
+The launcher itself has a network-free regression test:
+
+```bash
+bash script/test-dashboard-wrapper.sh
+```
+
+A successful launcher test ends with:
+
+```text
+PASS: Dashboard wrapper offline self-test
+```
+
+## Direct Project Manager run
 
 From the repository root:
 
