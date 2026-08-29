@@ -24,7 +24,7 @@ cat > "$TMP/current.json" <<'JSON'
   "generated_at":"2026-08-29T10:00:00Z",
   "repositories":[
     {"full_name":"example/alpha","fork":false,"role":"OWN_PROJECT","pushed_at":"2026-08-29T09:00:00Z","open_issues":3,"health_state":"HEALTHY","health_score":100,"activity":"ACTIVE","attention_level":"NONE","attention":"NONE","visibility":"private","archived":false,"default_branch":"main"},
-    {"full_name":"example/beta","fork":false,"role":"OWN_PROJECT","pushed_at":"2026-02-01T10:00:00Z","open_issues":0,"health_state":"WATCH","health_score":65,"activity":"AGING","attention_level":"WARN","attention":"DORMANT_180","visibility":"private","archived":false,"default_branch":"main"},
+    {"full_name":"example/beta","fork":false,"role":"OWN_PROJECT","pushed_at":"2026-07-01T10:00:00Z","open_issues":0,"health_state":"WATCH","health_score":65,"activity":"AGING","attention_level":"WARN","attention":"DORMANT_180","visibility":"private","archived":false,"default_branch":"main"},
     {"full_name":"example/reference","fork":true,"role":"UPSTREAM_FORK","pushed_at":"2026-08-01T10:00:00Z","open_issues":1,"health_state":"REFERENCE","health_score":90,"activity":"ACTIVE","attention_level":"INFO","attention":"PUBLIC_FORK","visibility":"public","archived":false,"default_branch":"main"},
     {"full_name":"example/gamma","fork":false,"role":"OWN_PROJECT","pushed_at":"2026-08-28T10:00:00Z","open_issues":0,"health_state":"HEALTHY","health_score":100,"activity":"ACTIVE","attention_level":"NONE","attention":"NONE","visibility":"private","archived":false,"default_branch":"main"}
   ]
@@ -48,7 +48,7 @@ jq -e '.summary.unchanged == 1' "$DELTA" >/dev/null
 jq -e '.summary.new == 1' "$DELTA" >/dev/null
 jq -e '.summary.removed == 1' "$DELTA" >/dev/null
 jq -e '.summary.own_projects_changed == 3' "$DELTA" >/dev/null
-jq -e '.summary.new_pushes == 2' "$DELTA" >/dev/null
+jq -e '.summary.new_pushes == 1' "$DELTA" >/dev/null
 jq -e '.summary.attention_escalations == 1' "$DELTA" >/dev/null
 jq -e '.summary.open_item_increases == 1' "$DELTA" >/dev/null
 jq -e '.changes | any(.full_name == "example/beta" and .attention_delta == 2 and .health_score_delta == -20)' "$DELTA" >/dev/null
