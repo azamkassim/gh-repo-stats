@@ -42,6 +42,22 @@ If the inventory is already fresh, skip the GitHub refresh with:
 bash script/azam-project-manager.sh --no-refresh
 ```
 
+## Offline self-test
+
+The Project Manager includes a network-free runtime test with mock inventory data:
+
+```bash
+bash script/test-project-manager.sh
+```
+
+A successful test ends with:
+
+```text
+PASS: Project Manager offline self-test
+```
+
+The self-test checks Bash/JQ runtime validity, Markdown and HTML generation, summary counts, the reference-fork section, and priority ordering of a warning project ahead of a healthy project.
+
 ## Priority meaning
 
 The display order is a repository-maintenance priority only:
