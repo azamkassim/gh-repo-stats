@@ -1,3 +1,7 @@
 # Ignore any csv files that may get uploaded 
 *.csv
 .DS_STORE
+
+# Azam Repository Control Center: local/private runtime data
+control/output/
+control/project-overrides.json
