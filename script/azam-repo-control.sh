@@ -131,7 +131,7 @@ jq \
     }
   ) as $repos |
   {
-    schema_version: "1.1",
+    schema_version: "1.2",
     generated_at: $generated_at,
     owner: $owner,
     privacy: "Generated locally. Do not commit control/output or project-overrides.json.",
@@ -220,14 +220,14 @@ jq -r '
     elif . == "INFO" then "neutral"
     else "good" end;
   "<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Repository Control Center</title>" +
-  "<style>body{font-family:system-ui,-apple-system,sans-serif;margin:0;background:#0d1117;color:#e6edf3}.wrap{max-width:1200px;margin:auto;padding:18px}.muted{color:#8b949e}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:18px 0}.card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:14px}.card b{font-size:1.6rem;display:block}.table{overflow:auto;border:1px solid #30363d;border-radius:12px}table{border-collapse:collapse;width:100%;background:#161b22}th,td{padding:10px;border-bottom:1px solid #30363d;text-align:left;white-space:nowrap}th{position:sticky;top:0;background:#21262d}.pill{border-radius:999px;padding:3px 8px;font-size:.78rem;font-weight:650}.good{background:#1f6f43}.neutral{background:#30363d}.warn{background:#7a4f01}.bad{background:#8e2c2c}a{color:#58a6ff;text-decoration:none}.note{margin-top:16px;padding:12px;border-left:3px solid #58a6ff;background:#161b22}</style></head><body><div class=\"wrap\">" +
+  "<style>body{font-family:system-ui,-apple-system,sans-serif;margin:0;background:#0d1117;color:#e6edf3}.wrap{max-width:1200px;margin:auto;padding:18px}.muted{color:#8b949e}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:18px 0}.card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:14px}.card b{font-size:1.6rem;display:block}.table{overflow:auto;border:1px solid #30363d;border-radius:12px}table{border-collapse:collapse;width:100%;background:#161b22}th,td{padding:10px;border-bottom:1px solid #30363d;text-align:left;white-space:nowrap}th{position:sticky;top:0;background:#21262d}.mobile-list{display:none}.repo-card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:14px}.repo-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.repo-name{font-weight:700;overflow-wrap:anywhere}.repo-sub{font-size:.82rem;color:#8b949e;margin-top:3px}.repo-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.kv{background:#0d1117;border-radius:9px;padding:9px}.kv span{display:block;color:#8b949e;font-size:.72rem;margin-bottom:4px}.kv strong{font-size:.9rem;overflow-wrap:anywhere}.pill{border-radius:999px;padding:3px 8px;font-size:.78rem;font-weight:650;display:inline-block}.good{background:#1f6f43}.neutral{background:#30363d}.warn{background:#7a4f01}.bad{background:#8e2c2c}a{color:#58a6ff;text-decoration:none}.note{margin-top:16px;padding:12px;border-left:3px solid #58a6ff;background:#161b22}@media(max-width:760px){.wrap{padding:16px}.table{display:none}.mobile-list{display:grid;gap:12px}.cards{grid-template-columns:1fr 1fr}.card{padding:13px}.card b{font-size:1.45rem}h1{font-size:2rem;line-height:1.08}.repo-grid{grid-template-columns:1fr 1fr}}</style></head><body><div class=\"wrap\">" +
   "<h1>Repository Control Center</h1><div class=\"muted\">Generated " + (.generated_at|h) + " · owner " + (.owner|h) + "</div>" +
   "<div class=\"cards\">" +
     "<div class=\"card\"><span class=\"muted\">Total</span><b>" + (.summary.total|tostring) + "</b></div>" +
     "<div class=\"card\"><span class=\"muted\">Own projects</span><b>" + (.summary.own_projects|tostring) + "</b></div>" +
     "<div class=\"card\"><span class=\"muted\">Upstream forks</span><b>" + (.summary.upstream_forks|tostring) + "</b></div>" +
     "<div class=\"card\"><span class=\"muted\">Active</span><b>" + (.summary.active|tostring) + "</b></div>" +
-    "<div class=\"card\"><span class=\"muted\">Info</span><b>" + (.summary.informational|tostring) + "</b></div>" +
+    "<div class=\"card\"><span class=\"muted\">Info only</span><b>" + (.summary.informational|tostring) + "</b></div>" +
     "<div class=\"card\"><span class=\"muted\">Needs review</span><b>" + (.summary.needs_review|tostring) + "</b></div>" +
   "</div>" +
   "<div class=\"table\"><table><thead><tr><th>Repository</th><th>Visibility</th><th>Role</th><th>Health</th><th>Score</th><th>Activity</th><th>Attention</th><th>Last push</th><th>Issues</th></tr></thead><tbody>" +
@@ -243,6 +243,17 @@ jq -r '
     "<td>" + (.open_issues|tostring) + "</td></tr>"
   ) | join("")) +
   "</tbody></table></div>" +
+  "<div class=\"mobile-list\">" +
+  (.repositories | map(
+    "<div class=\"repo-card\"><div class=\"repo-head\"><div><a class=\"repo-name\" href=\"" + (.url|h) + "\">" + (.full_name|h) + "</a><div class=\"repo-sub\">" + (.visibility|h) + " · " + (.role|h) + "</div></div><span class=\"pill " + ((.health_state|state_class)|h) + "\">" + (.health_state|h) + "</span></div>" +
+    "<div class=\"repo-grid\"><div class=\"kv\"><span>Health score</span><strong>" + (.health_score|tostring) + "</strong></div>" +
+    "<div class=\"kv\"><span>Activity</span><strong>" + (.activity|h) + "</strong></div>" +
+    "<div class=\"kv\"><span>Attention</span><strong><span class=\"pill " + ((.attention_level|attention_class)|h) + "\">" + (.attention_level|h) + "</span> " + (.attention|h) + "</strong></div>" +
+    "<div class=\"kv\"><span>Open issues</span><strong>" + (.open_issues|tostring) + "</strong></div>" +
+    "<div class=\"kv\"><span>Last push</span><strong>" + ((.pushed_at // "-")|h) + "</strong></div>" +
+    "<div class=\"kv\"><span>Branch</span><strong>" + (.default_branch|h) + "</strong></div></div></div>"
+  ) | join("")) +
+  "</div>" +
   "<div class=\"note\">Health score reflects activity/lifecycle only; it is not a code-quality or security assessment. Generated data is local and may include private repository metadata. Do not commit <code>control/output/</code>.</div>" +
   "</div></body></html>"
 ' "${JSON_OUT}" > "${HTML_OUT}"
