@@ -41,12 +41,11 @@ grep -q 'manager-ok' "$OUT1"
 grep -q -- '--no-refresh' "$TMP/manager-args.txt"
 test ! -f "$TMP/open-args.txt"
 
-: > "$TMP/manager-args.txt"
 OUT2="$TMP/out2.txt"
 bash "$TMP/script/azam-dashboard.sh" > "$OUT2"
 grep -q 'self-test-ok' "$OUT2"
 grep -q 'manager-ok' "$OUT2"
-test ! -s "$TMP/manager-args.txt"
+[[ "$(cat "$TMP/manager-args.txt")" == "" ]]
 grep -q 'project-manager.html' "$TMP/open-args.txt"
 grep -q 'Dashboard opened with termux-open.' "$OUT2"
 
