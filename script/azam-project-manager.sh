@@ -48,8 +48,8 @@ jq -e '.repositories | type == "array"' "${INVENTORY}" >/dev/null || {
     (.repositories | map(select(.fork == false))) as $own |
     "## Management Summary\n\n" +
     "- Own projects: \($own | length)\n" +
-    "- Active own projects: \($own | map(select(.activity == \"ACTIVE\")) | length)\n" +
-    "- Own projects needing review: \($own | map(select(.attention_level == \"WARN\" or .attention_level == \"ACTION\")) | length)\n" +
+    "- Active own projects: \($own | map(select(.activity == "ACTIVE")) | length)\n" +
+    "- Own projects needing review: \($own | map(select(.attention_level == "WARN" or .attention_level == "ACTION")) | length)\n" +
     "- Reference forks: \(.repositories | map(select(.fork == true)) | length)"
   ' "${INVENTORY}"
   echo
@@ -62,7 +62,7 @@ jq -e '.repositories | type == "array"' "${INVENTORY}" >/dev/null || {
     [.repositories[] | select(.fork == false)]
     | sort_by(rank, .health_score, .full_name)
     | .[]
-    | "| \(.full_name) | \(.health_state) | \(.health_score) | \(.activity) | \(.attention_level):\(.attention) | \(.open_issues) | \(.pushed_at // \"-\") |"
+    | "| \(.full_name) | \(.health_state) | \(.health_score) | \(.activity) | \(.attention_level):\(.attention) | \(.open_issues) | \(.pushed_at // "-") |"
   ' "${INVENTORY}"
   echo
   echo "## Reference Forks"
@@ -112,7 +112,7 @@ jq -r '
 jq -r '
   (.repositories | map(select(.fork == false))) as $own |
   "Project Manager complete\n" +
-  "Own: \($own|length) | Active own: \($own|map(select(.activity == \"ACTIVE\"))|length) | Own need review: \($own|map(select(.attention_level == \"WARN\" or .attention_level == \"ACTION\"))|length) | Reference forks: \(.repositories|map(select(.fork == true))|length)"
+  "Own: \($own|length) | Active own: \($own|map(select(.activity == "ACTIVE"))|length) | Own need review: \($own|map(select(.attention_level == "WARN" or .attention_level == "ACTION"))|length) | Reference forks: \(.repositories|map(select(.fork == true))|length)"
 ' "${INVENTORY}"
 
 echo "Manager MD  : ${MD_OUT}"
