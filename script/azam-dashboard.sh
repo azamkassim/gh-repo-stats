@@ -2,11 +2,13 @@
 set -euo pipefail
 
 # One-command launcher for the local Repository Control Center / Project Manager.
-# Sequence: self-test -> refresh/build -> open local dashboard when supported.
+# Sequence: offline tests -> refresh/build -> change detection -> open dashboard.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-DASHBOARD="${AZAM_REPO_CONTROL_OUTDIR:-${REPO_ROOT}/control/output}/project-manager.html"
+OUT_DIR="${AZAM_REPO_CONTROL_OUTDIR:-${REPO_ROOT}/control/output}"
+DASHBOARD="${OUT_DIR}/project-manager.html"
+DELTA_DASHBOARD="${OUT_DIR}/repo-delta.html"
 
 NO_OPEN=0
 NO_REFRESH=0
@@ -31,6 +33,7 @@ done
 
 echo "=== REPOSITORY CONTROL CENTER SELF-TEST ==="
 bash "${SCRIPT_DIR}/test-project-manager.sh"
+bash "${SCRIPT_DIR}/test-repo-delta.sh"
 
 echo
 echo "=== PROJECT MANAGER ==="
@@ -40,13 +43,23 @@ else
   bash "${SCRIPT_DIR}/azam-project-manager.sh"
 fi
 
+echo
+echo "=== CHANGES SINCE PREVIOUS RUN ==="
+bash "${SCRIPT_DIR}/azam-repo-delta.sh"
+
 if [[ ! -f "$DASHBOARD" ]]; then
   echo "ERROR: expected dashboard not found: $DASHBOARD" >&2
   exit 1
 fi
 
+if [[ ! -f "$DELTA_DASHBOARD" ]]; then
+  echo "ERROR: expected change dashboard not found: $DELTA_DASHBOARD" >&2
+  exit 1
+fi
+
 echo
 echo "Dashboard ready: $DASHBOARD"
+echo "Change report : $DELTA_DASHBOARD"
 
 if [[ "$NO_OPEN" -eq 1 ]]; then
   exit 0
