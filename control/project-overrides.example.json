@@ -1,0 +1,8 @@
+{
+  "your-login/your-repository": {
+    "project": "Project Name",
+    "purpose": "Development purpose",
+    "lifecycle": "ACTIVE",
+    "notes": "Keep private project details in project-overrides.json only"
+  }
+}
